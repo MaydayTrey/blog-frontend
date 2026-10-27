@@ -14,6 +14,7 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
       setUsername('')
       setPassword('')
@@ -25,11 +26,22 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedUser')
+    setUser(null)
+  }
+
+useEffect(() => {
+  const loggedUserJSON = window.localStorage.getItem('loggedUser')
+  if (loggedUserJSON) {
+    const user = JSON.parse(loggedUserJSON)
+    setUser(user)
+  }
+}, [])
+
+useEffect(() => {
+  blogService.getAll().then(blogs => setBlogs(blogs))
+}, [])
 
 
 /*
@@ -65,6 +77,7 @@ Does the conditional behavior go into the JSX?
       {user && (
         <div>
           <p>Hello, {user.name}</p>
+          <button onClick={handleLogout}>Logout</button>
           <h2>Blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
