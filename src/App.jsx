@@ -1,9 +1,29 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
+
+  const handleLogin = async event => {
+    event.preventDefault()
+
+    try {
+      const user = await loginService.login({ username, password })
+      setUser(user)
+      setUsername('')
+      setPassword('')
+
+    } catch {
+      console.log('Failed login')
+      setTimeout(() => {
+        console.log('Timeout')}, 5000)
+    }
+  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -11,14 +31,48 @@ const App = () => {
     )  
   }, [])
 
+
+/*
+So for the logic which is conditional, we want to handle a login, but we only want the login to appear if a user isn't already logged in
+Does the conditional behavior go into the JSX? 
+*/
+
   return (
     <div>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {!user && (
+        <form onSubmit={handleLogin}>
+          <label>
+            Username
+            <input 
+            type="text"
+            value={username}
+            onChange={({target}) => setUsername(target.value)}
+            />
+          </label>
+          
+          <label>
+          Password
+            <input 
+            type="password"
+            value={password}
+            onChange={({target}) => setPassword(target.value)}
+            />
+          </label>
+           <button type="submit">login</button>
+        </form>
+      )}
+
+      {user && (
+        <div>
+          <p>Hello, {user.name}</p>
+          <h2>Blogs</h2>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
       )}
     </div>
-  )
+)
 }
 
 export default App
