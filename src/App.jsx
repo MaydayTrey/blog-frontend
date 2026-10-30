@@ -12,9 +12,10 @@ Imperative:
 3) we will need a form with inputs that onChange change their responsible state. 
 */
 
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import { useState, useEffect } from 'react'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -50,6 +51,7 @@ const [url, setUrl] = useState('')
 const [messageStatus, setMessageStatus] = useState('') //Two possible states; 'error' or 'success', determines CSS behavior.
 const [message, setMessage] = useState(null) //Used to check: No message - Message, if there is a message then messageStatus determines CSS behavior.
 
+ const blogRef = useRef() //Creates an empty state object shared among components, will not cause re-render.
 
 //We need to do two things initially; fetch the blogs regardless. 
 
@@ -97,6 +99,7 @@ const handleCreate = async (event) => {
 //On this code, when someone clicks create a blog - we POST it, but also with user credentials?
   event.preventDefault()
   const returnBlog = await blogService.create({ title, author, url})
+  blogRef.current.toggleVisibility()
   setBlogs(blogs.concat(returnBlog))
   setMessage(`Blog successfully created. ${title} by ${author}, at ${url}`)
   setMessageStatus('success')
@@ -135,30 +138,32 @@ return (
       <div>
         <p>Hello, {user.name}!</p>
         <button onClick={handleLogout}>{user.name}, click here to Logout.</button>
-        <form onSubmit={handleCreate}>
-                  <label>Author
-          <input 
-          type="text"
-          value={author}
-          onChange={({target}) => setAuthor(target.value)} //This line throws me off, what's up with the target destructuring?
-          />
-        </label>
-        <label>Title
-          <input 
-          type="text"
-          value={title}
-          onChange={({target}) => setTitle(target.value)} //This line throws me off, what's up with the target destructuring?
-          />
-        </label>
-        <label>URL
-          <input 
-          type="text"
-          value={url}
-          onChange={({target}) => setUrl(target.value)} //This line throws me off, what's up with the target destructuring?
-          />
-        </label>
-        <button type="submit">Create blog</button>
-        </form>
+        <Togglable buttonLabel='Create a new blog' ref={blogRef}>
+          <form onSubmit={handleCreate}>
+                    <label>Author
+            <input 
+            type="text"
+            value={author}
+            onChange={({target}) => setAuthor(target.value)} //This line throws me off, what's up with the target destructuring?
+            />
+          </label>
+          <label>Title
+            <input 
+            type="text"
+            value={title}
+            onChange={({target}) => setTitle(target.value)} //This line throws me off, what's up with the target destructuring?
+            />
+          </label>
+          <label>URL
+            <input 
+            type="text"
+            value={url}
+            onChange={({target}) => setUrl(target.value)} //This line throws me off, what's up with the target destructuring?
+            />
+          </label>
+          <button type="submit">Create blog</button>
+          </form>
+        </Togglable>
         <h2>Blogs</h2>
         {blogs.map(blog => 
           <Blog key={blog.id} blog={blog} />
