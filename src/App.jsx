@@ -15,6 +15,7 @@ Imperative:
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -41,11 +42,6 @@ const [user, setUser] = useState(null)
 //Login fields
 const [username, setUsername] = useState('')
 const [password, setPassword] = useState('')
-
-//Book creation fields
-const [author, setAuthor] = useState('')
-const [title, setTitle] = useState('')
-const [url, setUrl] = useState('')
 
 //Notification state
 const [messageStatus, setMessageStatus] = useState('') //Two possible states; 'error' or 'success', determines CSS behavior.
@@ -95,20 +91,17 @@ const handleLogout = () => {
   blogService.setToken(null)
 }
 
-const handleCreate = async (event) => {
+//Now receives a blog object, instead of an event
+const handleCreate = async (blogObject) => {
 //On this code, when someone clicks create a blog - we POST it, but also with user credentials?
-  event.preventDefault()
-  const returnBlog = await blogService.create({ title, author, url})
+  const returnBlog = await blogService.create(blogObject)
   blogRef.current.toggleVisibility()
   setBlogs(blogs.concat(returnBlog))
-  setMessage(`Blog successfully created. ${title} by ${author}, at ${url}`)
+  setMessage(`Blog successfully created. ${blogObject.title} by ${blogObject.author}, at ${blogObject.url}`)
   setMessageStatus('success')
   setTimeout(() => {
     setMessage(null)
   }, 5000)
-  setAuthor('')
-  setTitle('')
-  setUrl('')
 }
 
 return (
@@ -139,30 +132,7 @@ return (
         <p>Hello, {user.name}!</p>
         <button onClick={handleLogout}>{user.name}, click here to Logout.</button>
         <Togglable buttonLabel='Create a new blog' ref={blogRef}>
-          <form onSubmit={handleCreate}>
-                    <label>Author
-            <input 
-            type="text"
-            value={author}
-            onChange={({target}) => setAuthor(target.value)} //This line throws me off, what's up with the target destructuring?
-            />
-          </label>
-          <label>Title
-            <input 
-            type="text"
-            value={title}
-            onChange={({target}) => setTitle(target.value)} //This line throws me off, what's up with the target destructuring?
-            />
-          </label>
-          <label>URL
-            <input 
-            type="text"
-            value={url}
-            onChange={({target}) => setUrl(target.value)} //This line throws me off, what's up with the target destructuring?
-            />
-          </label>
-          <button type="submit">Create blog</button>
-          </form>
+          <BlogForm createBlog={handleCreate} />
         </Togglable>
         <h2>Blogs</h2>
         {blogs.map(blog => 
