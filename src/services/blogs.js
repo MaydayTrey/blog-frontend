@@ -16,15 +16,15 @@ const getAll = () => {
 }
 
 
-//This creates a new post, it's async. Because we use await. 
+//This creates a new post, it's async. Because we use await.
 //There's this config which is an object, the header has an authorization with the token we establish
 const create = async newObject => {
   const config = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
 
-    const response = await axios.post(baseUrl, newObject, config) //This takes the baseUrl, the newObject we are posting, then the config?
-    return response.data
+  const response = await axios.post(baseUrl, newObject, config) //This takes the baseUrl, the newObject we are posting, then the config?
+  return response.data
 }
 
 const update = (id, newObject) => {
@@ -32,4 +32,13 @@ const update = (id, newObject) => {
   return request.then(response => response.data)
 }
 
-export default { getAll, create, update, setToken }
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+
+  const response = await axios.delete(`${baseUrl}/${id}`, config)
+  return response
+}
+
+export default { getAll, create, update, remove, setToken }
