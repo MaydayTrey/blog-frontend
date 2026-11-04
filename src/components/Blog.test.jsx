@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
+import userEvent from '@testing-library/user-event'
 
 test('renders title and author, but not url or likes by default', () => {
   const blog = {
@@ -21,8 +22,38 @@ test('renders title and author, but not url or likes by default', () => {
   const url = screen.queryByText('http://example.com', { exact: false })
   expect(url).toBeNull()
 
-  const likes = screen.queryByText('Rating: 7', { exact: false })
+  const likes = screen.queryByText('Likes: 7', { exact: false })
   expect(likes).toBeNull()
+})
+
+test('Likes and URL are visible upon click', async () => {
+    const user = userEvent.setup()
+    const mockHandler = vi.fn() //Do we need a mock handler? Not really, because we just want to actually click the button and see if it works right?
+
+    const blog = {
+        title: 'Some book',
+        author: 'Some author',
+        url: 'http://example.com',
+        likes: 7,
+        user: {
+            name: 'Test User',
+            username: 'testuser'
+        }
+    }
+    render(<Blog blog={blog}/>)
+    const button = screen.getByText('view')
+    console.log(button)
+
+    await user.click(button)
+
+    const url = screen.queryByText('http://example.com', { exact: false })
+    expect(url).toBeVisible()
+
+    const likes = screen.queryByText('Likes: 7', { exact: false })
+    expect(likes).toBeVisible()
+    //Get the button -->  <button onClick={detailToggle}>{detailToggleState ? 'hide' : 'view'}</button>
+    // Click it    
+    //Check if likes and URL are available
 })
 
 /*
