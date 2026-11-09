@@ -1,12 +1,10 @@
 import { useState } from 'react'
-
+import { TextField, Button } from '@mui/material'
 
 const BlogForm = ({ createBlog }) => {
-  //Blog creation fields
   const [author, setAuthor] = useState('')
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
-
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -18,29 +16,32 @@ const BlogForm = ({ createBlog }) => {
 
   return (
     <div>
+      <h2>Create a new blog</h2>
       <form onSubmit={addBlog}>
-        <label>Author
-          <input
-            type="text"
+        <div>
+          <TextField
+            label="Author"
             value={author}
-            onChange={({ target }) => setAuthor(target.value)} //This line throws me off, what's up with the target destructuring?
+            onChange={({ target }) => setAuthor(target.value)}
           />
-        </label>
-        <label>Title
-          <input
-            type="text"
+        </div>
+        <div>
+          <TextField
+            label="Title"
             value={title}
-            onChange={({ target }) => setTitle(target.value)} //This line throws me off, what's up with the target destructuring?
+            onChange={({ target }) => setTitle(target.value)}
           />
-        </label>
-        <label>URL
-          <input
-            type="text"
+        </div>
+        <div>
+          <TextField
+            label="URL"
             value={url}
-            onChange={({ target }) => setUrl(target.value)} //This line throws me off, what's up with the target destructuring?
+            onChange={({ target }) => setUrl(target.value)}
           />
-        </label>
-        <button type="submit">Create blog</button>
+        </div>
+        <Button type="submit" variant="contained" style={{ marginTop: 10 }}>
+          Create blog
+        </Button>
       </form>
     </div>
   )

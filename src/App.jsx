@@ -8,6 +8,8 @@ import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -83,21 +85,33 @@ const App = () => {
     setBlogs(blogs.map(b => b.id === blogObject.id ? returnedBlog : b))
   }
 
-  const padding = { paddingRight: 10 }
+
 
   return (
-    <div>
-      <div>
-        <Link style={padding} to="/">blogs</Link>
-        {user
-          ? <>
-            <Link style={padding} to="/create">create new</Link>
-            <span style={padding}>{user.name} logged in</span>
-            <button onClick={handleLogout}>Logout</button>
-          </>
-          : <Link style={padding} to="/login">login</Link>
-        }
-      </div>
+    <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/">
+            blogs
+          </Button>
+          {user
+            ? <>
+              <Button color="inherit" component={Link} to="/create">
+                create new
+              </Button>
+              <em style={{ marginLeft: 10, marginRight: 10 }}>
+                {user.name} logged in
+              </em>
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+            : <Button color="inherit" component={Link} to="/login">
+              login
+            </Button>
+          }
+        </Toolbar>
+      </AppBar>
 
       <Notification type={messageStatus} message={message} />
 
@@ -114,7 +128,7 @@ const App = () => {
           />
         } />
       </Routes>
-    </div>
+    </Container>
   )
 }
 
