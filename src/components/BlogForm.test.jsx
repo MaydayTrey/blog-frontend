@@ -9,7 +9,7 @@ test('Checking the validitiy of the form', async () => {
   render(<BlogForm createBlog={mockCreateHandler} />)
 
 
-  //Okay, so I need to see how many textbox's we have.   
+  //Okay, so I need to see how many textbox's we have.
   const authorInput = screen.getByLabelText('Author')
   const titleInput = screen.getByLabelText('Title')
   const urlInput = screen.getByLabelText('URL')
@@ -29,13 +29,13 @@ test('Checking the validitiy of the form', async () => {
 
 /*
 5.16: Blog List Tests, step 4
-Make a test for the new blog form. 
-The test should check, 
-that the form calls the event handler it received as props 
+Make a test for the new blog form.
+The test should check,
+that the form calls the event handler it received as props
 with the right details when a new blog is created.
 
-What the hell does that even mean, that the form calls the event handler it received.. 
+What the hell does that even mean, that the form calls the event handler it received..
 with the "right details" when a new blog is created? huh?
 
-Fill in the form, submit it, verify the parent got handed the right object. 
+Fill in the form, submit it, verify the parent got handed the right object.
 */
